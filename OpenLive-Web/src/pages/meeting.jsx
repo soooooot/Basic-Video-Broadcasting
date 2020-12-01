@@ -51,7 +51,7 @@ const MeetingPage = () => {
   const routerCtx = useRouter()
   const stateCtx = useGlobalState()
   const mutationCtx = useGlobalMutation()
-  
+
   const localClient = useMemo(() => {
     const client = new RTCClient()
     if (!client._created) {
@@ -81,6 +81,18 @@ const MeetingPage = () => {
   }, [stateCtx, muteVideo, muteAudio])
 
   useEffect(() => {
+    localClient.on('mute-audio', (evt) => {
+      console.log('[trigger] mute-audio: ', evt.uid)
+    })
+    localClient.on('unmute-audio', (evt) => {
+      console.log('[trigger] unmute audio: ', evt.uid)
+    })
+    localClient.on('mute-video', (evt) => {
+      console.log('[trigger] mute video: ', evt.uid)
+    })
+    localClient.on('unmute-video', (evt) => {
+      console.log('[trigger] unmute video: ', evt.uid)
+    })
     return () => {
       localClient && localClient.leave(() => mutationCtx.clearAllStream())
     }
@@ -267,7 +279,7 @@ const MeetingPage = () => {
                       )}
                     />
                   </Tooltip>
-                  
+
                   {/* <i onClick={handleClick('profile')} className={clsx(classes.customBtn, 'show-profile')}/> */}
                 </div>
               )}
